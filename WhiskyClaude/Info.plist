@@ -33,7 +33,7 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Whisky Claude transcribes audio on-device to detect wake phrases like 'hey claude' or 'hey whisky'. Audio never leaves your Mac.</string>
 	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/voidengineer-911/whisky-claude/master/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/Whisky-11/whisky-claude/master/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>uwphgwYx7cawf3GqkcSOpyBUeLSIWpOKbu/ILq/KwWg=</string>
 </dict>

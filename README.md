@@ -42,7 +42,7 @@ Plus:
 ## Install
 
 ```bash
-git clone https://github.com/voidengineer-911/whisky-claude.git
+git clone https://github.com/Whisky-11/whisky-claude.git
 cd whisky-claude
 ./scripts/install.sh
 ```

@@ -32,7 +32,7 @@ The mascot window cannot be clicked through (it intentionally passes mouse event
 
 ## Reporting a vulnerability
 
-If you believe you've found a security issue, please open a private security advisory at https://github.com/voidengineer-911/whisky-claude/security/advisories/new. Don't file it as a public issue.
+If you believe you've found a security issue, please open a private security advisory at https://github.com/Whisky-11/whisky-claude/security/advisories/new. Don't file it as a public issue.
 
 We aim to acknowledge within a few days. For low-severity issues a regular PR is fine.
 

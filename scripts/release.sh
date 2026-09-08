@@ -17,7 +17,7 @@ command -v gh >/dev/null || { echo "✗ gh CLI not found"; exit 1; }
 PROJ="WhiskyClaude.xcodeproj"
 SCHEME="WhiskyClaude"
 APPNAME="Whisky Claude"
-REPO="voidengineer-911/whisky-claude"
+REPO="Whisky-11/whisky-claude"
 REL="build/Build/Products/Release"
 ZIP="WhiskyClaude-${VERSION}.zip"
 SIGN_ID="Ahmad Sharaf Code Signing"
@@ -89,4 +89,11 @@ echo "→ creating GitHub release v${VERSION}"
 gh release create "v${VERSION}" "$ZIP" --repo "$REPO" --target "$(git rev-parse HEAD)" \
    --title "v${VERSION}" --notes "Whisky Claude ${VERSION}"
 rm -f "$ZIP"
+
+# 8. Remove the build products. Both of them are Spotlight-indexed as applications,
+# so leaving them behind makes "Whisky Claude" resolve to three .app bundles and the
+# user cannot tell which one is installed. install.sh already cleans up after itself;
+# release.sh did not, and a release on 2026-08-17 left both copies on disk until
+# 2026-09-08. /Applications/Whisky Claude.app is the only copy that should exist.
+rm -rf "$REL/WhiskyClaude.app" "$APP" "$REL/WhiskyClaude.app.dSYM"
 echo "✓ released v${VERSION} — appcast live on master, Sparkle clients will pick it up"
