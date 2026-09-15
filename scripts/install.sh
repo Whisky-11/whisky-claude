@@ -87,8 +87,25 @@ rm -rf "$SOURCE_APP" "$RENAMED_APP"
 
 echo "→ installing pet-event helper"
 mkdir -p ~/.claude/scripts
-cp scripts/dot-claude/wc-event.sh ~/.claude/scripts/wc-event.sh
-chmod +x ~/.claude/scripts/wc-event.sh
+HELPER_DEST="$HOME/.claude/scripts/wc-event.sh"
+FOUNDATION_SRC="$HOME/Desktop/projects/force-ai-foundation/ops/wc-event.sh"
+# force-ai-foundation (ops/install.sh) canonically owns this helper when it's
+# present on the machine — its copy logs safe metadata only, rotates at ~1MB,
+# and carries a "# claude-hook:" header that foundation's own
+# dead-gate-detect.sh depends on. Whichever installer ran LAST used to win
+# silently here; that already caused one regression (an older foundation copy
+# overwrote a fixed one and grew to 240MB of full tool payloads). Detect
+# ownership by CONTENT (the header, which survives even if foundation isn't
+# checked out on this machine) OR by the foundation repo's own path (covers a
+# foundation checkout whose installer hasn't run yet) — either signal means
+# foundation owns it, so we skip and leave it alone. Only a standalone install
+# (no foundation anywhere in the picture) gets the bundled copy below.
+if { [ -f "$HELPER_DEST" ] && grep -q '^# claude-hook:' "$HELPER_DEST" 2>/dev/null; } || [ -f "$FOUNDATION_SRC" ]; then
+    echo "  force-ai-foundation owns wc-event.sh — leaving $HELPER_DEST untouched"
+else
+    cp scripts/dot-claude/wc-event.sh "$HELPER_DEST"
+    chmod +x "$HELPER_DEST"
+fi
 
 echo "→ wiring Claude Code hooks"
 scripts/install-hooks.sh

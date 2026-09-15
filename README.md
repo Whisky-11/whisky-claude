@@ -51,10 +51,16 @@ The installer:
 1. Builds the Release config and signs with a stable self-signed certificate if one is installed in your login keychain (falls back to ad-hoc otherwise — see [Persistent permissions](#persistent-permissions) below)
 2. Detects a change of signing identity vs the previously-installed copy and resets stale TCC grants only when needed
 3. Copies the app to `/Applications/Whisky Claude.app`
-4. Installs the Claude Code hook helper to `~/.claude/scripts/wc-event.sh`
+4. Installs the Claude Code hook helper to `~/.claude/scripts/wc-event.sh` — **unless [force-ai-foundation](https://github.com/ForceAI-KW/force-ai-foundation) already owns it** (see [Hook helper ownership](#hook-helper-ownership) below), in which case this step is skipped so the two installers can't silently overwrite each other
 5. Wires the 4 hooks (`Stop`, `Notification`, `PreToolUse`, `UserPromptSubmit`) into `~/.claude/settings.json` — safely, preserving any other hooks you already have
 6. Registers as a macOS Login Item so it auto-starts at login
 7. Cleans up build artifacts so they don't appear as duplicate apps in Spotlight
+
+### Hook helper ownership
+
+`~/.claude/scripts/wc-event.sh` is a small shell script, not an app-specific file — if you also run [force-ai-foundation](https://github.com/ForceAI-KW/force-ai-foundation) (which installs its own `ops/wc-event.sh` to the same path as part of its general Claude Code hook tooling), **foundation owns that file**, not Whisky Claude. `./scripts/install.sh` detects this — an already-installed helper carrying a `# claude-hook:` declaration header, or a `force-ai-foundation` checkout on this machine — and skips writing to it rather than overwriting it, whichever installer happens to run last. Without this check, the "last installer wins" silently: an older copy overwriting a fixed one previously let an unbounded-growth log accumulate to 240MB of raw tool payloads.
+
+If foundation is not present, `./scripts/install.sh` installs the bundled copy at `scripts/dot-claude/wc-event.sh` as before — same event JSON format written to `~/.claude/pet-events/`. That bundled copy is kept in sync with foundation's canonical version so a standalone install gets the same safe (metadata-only, size-capped) logging behaviour; see the comment at the top of `scripts/dot-claude/wc-event.sh` for how to refresh it.
 
 ### Persistent permissions (v1.2.0+)
 
